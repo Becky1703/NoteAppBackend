@@ -55,39 +55,42 @@ userRouter.post("/login", async (req, res) => {
     
     //verify if user is available in the database
     try {
-        let data = await UserModel.find({email}) 
-        // compare hashed password and unhashed password
-        if(data.length>0){
-          let token = jwt.sign({userId: data[0]._id}, "Becky1703")
-            bcrypt.compare(password, data[0].password, function(err, result) {
-                if(err){
-                    res.send({message: "Something went wrong", status: 0})
-                }
-                // if the password is correct, return a success message
-                if(result){
-                    res.send({
-                        message: "Login Successful",
-                        token: token, 
-                        status: 1
-                    })
-                }else{
-                    res.send({
-                        message: "Wrong credentials", 
-                        status: 0})
-                }
-            });
-        // if user does not exist, return an error message   
-        } else {
+      let data = await UserModel.find({ email });
+      // compare hashed password and unhashed password
+      if (data.length > 0) {
+        let token = jwt.sign({ userId: data[0]._id }, "Becky1703");
+        bcrypt.compare(password, data[0].password, function (err, result) {
+          if (err) {
+            res.send({ message: "Something went wrong", status: 0 });
+          }
+          // if the password is correct, return a success message and token
+          if (result) {
             res.send({
-                message: "User not found",
-                status: 0   
-        })
-    }
+              message: "Login Successful",
+              token: token,
+              status: 1,
+            });
+          } else {
+            res.send({
+              message: "Wrong credentials",
+              status: 0,
+            });
+          }
+        });
+        // if user does not exist, return an error message
+      } else {
+        res.send({
+          message: "User not found",
+          status: 0,
+        });
+      }
     } catch (error) {
-    
+      res.send({
+        message: error.message,
+        status: 0,
+      });
     }
     
 })
-
 
 module.exports = {userRouter}
