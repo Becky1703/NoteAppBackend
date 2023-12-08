@@ -51,14 +51,18 @@ userRouter.post("/register",async (req,res)=>{
  * If the passwords do not match, it returns an error message.
  */
 userRouter.post("/login", async (req, res) => {
-    const {email, password} = req.body
-    
+    const {email, password} = req.body;
+
+    // sets expiration time for token authentication used to get data from database
+    let option = {
+        expiresIn: "5m"
+    }
     //verify if user is available in the database
     try {
       let data = await UserModel.find({ email });
       // compare hashed password and unhashed password
       if (data.length > 0) {
-        let token = jwt.sign({ userId: data[0]._id }, "Becky1703");
+        let token = jwt.sign({ userId: data[0]._id }, "Becky1703", option);
         bcrypt.compare(password, data[0].password, function (err, result) {
           if (err) {
             res.send({ message: "Something went wrong", status: 0 });
