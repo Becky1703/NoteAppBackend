@@ -21,7 +21,7 @@ app.listen(port,async()=>{
     try{
         await connection
         console.log("database is connected")
-    // displays error message if there's an error connecting to the database    
+    // displays error message if there's an error connecting to the database     
     }catch (error) {
         console.log(error)
     }
