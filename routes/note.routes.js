@@ -64,6 +64,31 @@ noteRouter.patch("/", async (req, res) => {
     });
   }
 });
+
+/**
+ * Deletes a note in the database.
+ * and sends a success message if the note is deleted.
+ * if the note is not found, it sends an error message.
+ * 
+ * @param {string}
+ */
+noteRouter.delete("/", async (req, res) => {
+    let { id } = req.headers;
+    try {
+      await NoteModel.findByIdAndDelete({ _id: id });
+      res.send({
+        message: "Note Deleted",
+        status: 1,
+      });
+    } catch (error) {
+      res.send({
+        message: error.message,
+        status: 0,
+      });
+    }
+  });
+
+  
 module.exports = {
   noteRouter,
 };
