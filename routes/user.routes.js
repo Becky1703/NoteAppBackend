@@ -55,7 +55,7 @@ userRouter.post("/login", async (req, res) => {
 
     // sets expiration time for token authentication used to get data from database
     let option = {
-        expiresIn: "5m"
+        expiresIn: "20m"
     }
     //verify if user is available in the database
     try {
