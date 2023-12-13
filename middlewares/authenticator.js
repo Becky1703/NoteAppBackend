@@ -5,7 +5,7 @@ function authenticator(req, res, next) {
   jwt.verify(token, "Becky1703", (err, decode) => {
     if (err) {
       res.send({
-        message: "Auth failed.Token is not valid, please login.",
+        message: "Auth failed. Token is not valid, please login.",
         status: 2,
       });
     }
@@ -14,7 +14,7 @@ function authenticator(req, res, next) {
       next();
     } else {
       res.send({
-        message: "Auth failed.Token is not valid, please login.",
+        message: "Auth failed. Token is not valid, please login.",
         status: 2,
       });
     }
