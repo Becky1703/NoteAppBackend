@@ -1,19 +1,129 @@
 const express = require("express")
 const { UserModel } = require("../models/UserModel")
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt") 
 const jwt = require("jsonwebtoken")
 
 const userRouter = express.Router()
 
-// route for the user
+/**
+ * @swagger
+ * tags:
+ *   name: User
+ *   description: The users managing API
+ */
+
+/**
+ * @swagger
+ * /user:
+ *   get:
+ *       summary: Returns the list of all the users in the database
+ *       tags: [User]
+ *       responses:
+ *           200:
+ *               description: The list of the users
+ *               content:
+ *                   application/json:
+ *                       schema:
+ *                          type: array
+ *                          items:
+ *                               $ref: '#/components/schemas/User'
+ * 
+ */
+ 
 userRouter.get("/", (req, res) => {
    res.send("All users")
 })
 
-/**User registration route. 
- * It receives the user's name, email, and password,
- * hashes the password using bcrypt, and saves the user to the database.
- * If there's an error, it returns an error message.
+
+/**
+ * @swagger
+ * components:
+ *    schemas:
+ *        User:
+ *            type: object
+ *            required:
+ *                - name
+ *                - email
+ *                - password
+ *            properties:
+ *                name:
+ *                    type: string
+ *                    description: The name of the user.
+ *                    example: "John Doe"
+ *                email:
+ *                    type: string
+ *                    description: The email address of the user.
+ *                    example: "johndoe@example.com"  
+ *                password:
+ *                    type: string
+ *                    description: The password of the user.
+ *                    example: "password123"
+ *            example:
+ *                name: "John Doe"
+ *                email: "johndoe@example.com"
+ *                password: "XXXXXXXXXXX"
+ *        Error:
+ *            type: object
+ *            properties:
+ *                message:
+ *                    type: string
+ *                    description: The error message.
+ *                    example: "Error message"
+ *                status:
+ *                    type: integer
+ *                    description: The HTTP status code.
+ *                    example: 500
+ *            example:
+ *                message: "Error message"
+ *                status: 500    
+ */
+
+/**
+ * @swagger
+ * /user/register:
+ *  post:
+ *      summary: Register a new user
+ *      tags: [User]
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema: 
+ *                      $ref: '#/components/schemas/User'
+ *                      type: object
+ *                      properties:
+ *                          name:
+ *                              type: string
+ *                              description: The name of the user.
+ *                              example: "John Doe"
+ *                          email:
+ *                              type: string
+ *                              description: The email address of the user.
+ *                              example: "johndoe@example.com"
+ *                          password:
+ *                              type: string
+ *                              description: The password of the user.  
+ *                              example: "password123"
+ *      responses:
+ *          200:
+ *              description: The user was successfully registered
+ *              content: 
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/User'
+ *          500:
+ *              description: Some server error
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Error'
+ *          400:
+ *              description: Bad request
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Error'
+ * 
  */
 
 userRouter.post("/register",async (req,res)=>{
@@ -43,12 +153,92 @@ userRouter.post("/register",async (req,res)=>{
 })
 
 /**
- * User login route. 
- * It receives the user's email and password,
- * checks if the user exists in the database, and 
- * compares the hashed password with the unhashed password.
- * If the passwords match, it returns a success message with a JWT token. 
- * If the passwords do not match, it returns an error message.
+ * @swagger
+ * components:
+ *    schemas:
+ *        User:
+ *            type: object
+ *            required:
+ *                - email
+ *                - password
+ *            properties:
+ *                email:
+ *                    type: string
+ *                    description: The email address of the user.
+ *                    example: "johndoe@example.com"
+ *                password:
+ *                    type: string
+ *                    description: The password of the user.
+ *                    example: "password123"
+ *            example:
+ *                email: "johndoe@example.com"
+ *                password: "XXXXXXXXXXX"
+ *        Error:
+ *            type: object
+ *            properties:
+ *                message:
+ *                    type: string
+ *                    description: The error message.
+ *                    example: "Error message"
+ *                status:
+ *                    type: integer
+ *                    description: The HTTP status code.
+ *                    example: 500
+ *            example:
+ *                message: "Error message"
+ *                status: 500
+ */
+
+/**
+ * @swagger
+ * /user/login:
+ *    post:
+ *      summary: Login a user
+ *      tags: [User]
+ *      requestBody:
+ *          required: true
+ *          content:
+ *              application/json:
+ *                  schema:
+ *                      type: object
+ *                      properties:
+ *                          email:
+ *                              type: string
+ *                          password:
+ *                              type: string
+ *      responses:
+ *          200:
+ *              description: The user was successfully logged in
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          type: object
+ *                          properties:
+ *                              message:
+ *                                  type: string
+ *                              token:
+ *                                  type: string
+ *                              status: 
+ *                                  type: number
+ *          500:
+ *              description: Some server error
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Error'
+ *          400:
+ *              description: Bad request
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Error'
+ *          404:
+ *              description: User not found
+ *              content:
+ *                  application/json:
+ *                      schema:
+ *                          $ref: '#/components/schemas/Error'
+ * 
  */
 userRouter.post("/login", async (req, res) => {
     const {email, password} = req.body;
