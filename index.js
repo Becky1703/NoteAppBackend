@@ -29,6 +29,14 @@ const options = {
 const swaggerSpec = swaggerJsDoc(options)
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
+app.get("/swagger.json", (req, res) => {
+    res.setHeader("Content-Type", "application/json");
+    res.setHeader("Content-Disposition", "attachment; filename=docs");
+
+    const formattedSwaggerSpec = JSON.stringify(swaggerSpec, null, 2);
+    res.send(formattedSwaggerSpec);
+});
+
 const port = process.env.PORT
 
 app.use(cors())
