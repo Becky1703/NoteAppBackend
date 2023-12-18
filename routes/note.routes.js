@@ -49,10 +49,32 @@ noteRouter.use(authenticator)
  *                            $ref: '#/components/schemas/Error'
  * 
  */
+
+const jwtSecret = process.env.JWT_SECRET || "defaultSecret";
+
 noteRouter.get("/", (req, res) => {
   let token = req.headers.authorization;
-  jwt.verify(token, "Becky1703", async (err, decode) => {
+  jwt.verify(token, jwtSecret, async (err, decode) => {
     try {
+      if (err) {
+        // Handle token verification errors
+        console.error(err);
+        res.status(401).send({
+          message: 'Unauthorized',
+          status: 0,
+        });
+        return;
+      }
+
+      if (!decode || !decode.userId) {
+        // Invalid token structure
+        res.status(401).send({
+          message: 'Invalid token',
+          status: 0,
+        });
+        return;
+      }
+
       let data = await NoteModel.find({ user: decode.userId });
       res.send({
         data: data,
@@ -60,14 +82,17 @@ noteRouter.get("/", (req, res) => {
         status: 1,
       });
     } catch (error) {
-      res.send({
-        message: error.message,
+      // Log the error for server-side debugging
+      console.error(error);
+      res.status(500).send({
+        message: 'Internal Server Error',
         status: 0,
       });
-
+      
     }
-  })
+  });
 });
+
 
 /**
  * @swagger

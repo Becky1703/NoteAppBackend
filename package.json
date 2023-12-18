@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "server": "nodemon index.js",
     "type": "module"
   },
@@ -22,5 +22,13 @@
     "require": "^2.4.20",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testPathIgnorePatterns": ["noteappbackend/node_modules/", "noteappbackend/tests/__mocks__/"]
   }
 }

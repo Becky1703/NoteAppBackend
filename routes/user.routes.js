@@ -126,31 +126,50 @@ userRouter.get("/", (req, res) => {
  * 
  */
 
-userRouter.post("/register",async (req,res)=>{
-    const {name, email, password} = req.body
-    
-    // Hashes a user's password using bcrypt
-    bcrypt.hash(password, 5, async function(err, hash) {
-        // if there's an error, return the error message
-        if (err) {
-            return res.send({message: "something went wrong", status: 0})
-        }
-        // if there's no error, save the user to the database and return a success message
-        try {
-            let user = new UserModel ({name, email, password: hash})
-        await user.save()
-        res.send({
-            message: "user registered successfully", 
-            status: 1
-        })    
-        } catch (error) {
-            res.send({
-                message: err.message, 
-                status: 0
-        })
+userRouter.post("/register", async (req, res) => {
+  const { name, email, password } = req.body;
+
+  try {
+    // Check if the name, email, and password are provided
+    if (!name || !email || !password) {
+      return res.status(500).send({ message: 'Invalid registration data', status: 0 });
     }
-    })
-})
+
+    // Check if the email is already registered
+    const existingUser = await UserModel.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).send({ message: 'Email is already registered', status: 0 });
+    }
+
+    // Hashes a user's password using bcrypt
+    bcrypt.hash(password, 5, async function (err, hash) {
+      if (err) {
+        return res.status(500).send({ message: 'Something went wrong', status: 0 });
+      }
+
+      try {
+        let user = new UserModel({ name, email, password: hash });
+        await user.save();
+        res.status(200).send({
+          message: 'User registered successfully',
+          status: 1,
+        });
+      } catch (error) {
+        res.status(500).send({
+          message: error.message || 'An error occurred',
+          status: 0,
+        });
+      }
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: error.message || 'An error occurred',
+      status: 0,
+    });
+  }
+});
+
 
 /**
  * @swagger
@@ -240,51 +259,49 @@ userRouter.post("/register",async (req,res)=>{
  *                          $ref: '#/components/schemas/Error'
  * 
  */
-userRouter.post("/login", async (req, res) => {
-    const {email, password} = req.body;
 
-    // sets expiration time for token authentication used to get data from database
-    let option = {
-        expiresIn: "20m"
+userRouter.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await UserModel.findOne({ email });
+
+    if (!user) {
+      return res.status(401).send({ message: 'User not found', status: 0 });
     }
-    //verify if user is available in the database
-    try {
-      let data = await UserModel.find({ email });
-      // compare hashed password and unhashed password
-      if (data.length > 0) {
-        let token = jwt.sign({ userId: data[0]._id }, "Becky1703", option);
-        bcrypt.compare(password, data[0].password, function (err, result) {
-          if (err) {
-            res.send({ message: "Something went wrong", status: 0 });
-          }
-          // if the password is correct, return a success message and token
-          if (result) {
-            res.send({
-              message: "Login Successful",
-              token: token,
-              status: 1,
-            });
-          } else {
-            res.send({
-              message: "Wrong credentials",
-              status: 0,
-            });
-          }
-        });
-        // if user does not exist, return an error message
-      } else {
-        res.send({
-          message: "User not found",
-          status: 0,
-        });
-      }
-    } catch (error) {
-      res.send({
-        message: error.message,
-        status: 0,
-      });
+
+    if (password.length < 6) {
+      return res.status(401).send({ message: 'Invalid password', status: 0 });
     }
-    
-})
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return res.status(401).send({ message: 'Incorrect password', status: 0 });
+    }
+
+    // Generate and send a JWT token upon successful login
+    const token = jwt.sign({ userId: user._id }, "Becky1703", { expiresIn: "20m" });
+    res.status(200).send({
+      message: 'Login Successful',
+      token,
+      status: 1,
+    });
+  } catch (error) {
+    console.error(error);
+
+  // Check for specific error types related to invalid tokens
+   if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
+      console.log('Token error:', error.message);
+      return res.status(401).send({ message: 'Invalid token', status: 0 });
+    }
+
+
+    res.status(500).send({
+      message: 'An error occurred',
+      status: 0,
+    });
+  }
+});
 
 module.exports = {userRouter}

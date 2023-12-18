@@ -9,6 +9,7 @@ require("dotenv").config()
 
 const app = express()
 
+//swagger documentation
 const options = {
     definition: {
         openapi: "3.0.0",
@@ -37,7 +38,7 @@ app.get("/swagger.json", (req, res) => {
     res.send(formattedSwaggerSpec);
 });
 
-const port = process.env.PORT
+const port = process.env.PORT 
 
 app.use(cors())
 app.use(express.json())
@@ -52,15 +53,15 @@ app.get("/",(req,res)=>{
     })
 })
 
-// database connection setup
-app.listen(port,async()=>{
-    try{
-        await connection 
-        console.log("database is connected")
-    // displays error message if there's an error connecting to the database     
-    }catch (error) {
-        console.log(error)
+// sets up connection and starts the server
+const server = app.listen(4000, async () => {
+    try {
+      await connection;
+       // console.log('Database is connected');
+       // console.log('Server is running on port number 4000');
+    } catch (error) {
+      console.error(error);
     }
-     // displays the port number on which the server is running  
-    console.log ("Server is running on port number", port)
-})
+  });
+ 
+module.exports = { app, server}
