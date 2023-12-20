@@ -1,12 +1,12 @@
 const request = require('supertest');
-const { app, server } = require('../index');
+const { app } = require('../index');
 const mongoose = require('mongoose');
 
 describe('User Tests', () => {
 
     beforeAll( () => {
         return new Promise((resolve) => {
-        server.on("listening", () => {
+        app.listen.on("listening", () => {
             resolve();
         });
       });

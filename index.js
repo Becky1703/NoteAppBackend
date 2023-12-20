@@ -2,7 +2,7 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const express = require("express")
 const cors = require("cors")
-const { connection } = require("./db")
+const { connectDB } = require("./db")
 const { userRouter } = require("./routes/user.routes")
 const { noteRouter } = require("./routes/note.routes")
 require("dotenv").config() 
@@ -53,15 +53,22 @@ app.get("/",(req,res)=>{
     })
 })
 
+
+connectDB().then(() => {
+    app.listen(port, () => {
+        console.log("listening for requests");
+    })
+})
+
 // sets up connection and starts the server
-const server = app.listen(4000, async () => {
-    try {
-      await connection;
+//const server = app.listen(4000, async () => {
+   // try {
+     // await connection;
        // console.log('Database is connected');
        // console.log('Server is running on port number 4000');
-    } catch (error) {
-      console.error(error);
-    }
-  });
+   // } catch (error) {
+   //   console.error(error);
+  //  }
+  //});
  
-module.exports = { app, server}
+module.exports = { app }
