@@ -1,20 +1,16 @@
 const request = require('supertest');
 const { app } = require('../index');
 const mongoose = require('mongoose');
+const { connectDB } = require('../db');
 
 describe('User Tests', () => {
 
-    beforeAll( () => {
-        return new Promise((resolve) => {
-        app.listen.on("listening", () => {
-            resolve();
-        });
-      });
+    beforeAll(async () => {
+        await connectDB();
     });
 
     afterAll(async() => {
-      await new Promise((resolve) => server.close(resolve));
-      await mongoose.connection.close();
+        await mongoose.connection.close();
     });
 
     beforeEach(() => {

@@ -1,23 +1,19 @@
 /** write tests for note route */
 
 const request = require('supertest');
-const { app, server } = require('../index'); // Import your Express app and server
+const { app } = require('../index'); // Import your Express app and server
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
+const { connectDB } = require('../db');
 
 describe('Note Routes', () => {
  let authToken;
 
   beforeAll(async () => {
-    return new Promise((resolve) => {
-        server.on("listening", () => {
-            resolve();
-        });
-      });      
+    await connectDB();   
   });
 
   afterAll(async () => {
-    await new Promise((resolve) => server.close(resolve));
     await mongoose.connection.close();
   });
 
@@ -31,15 +27,16 @@ describe('Note Routes', () => {
       
       console.log(response.body);
       
-      
+
       authToken = response.body.data.token;
 
     });
 
+
   it('should get all notes for a user', async () => {
     const response = await request(app)
-      .get('/note')
-      .set('Authorization', `Bearer ${authToken}`);
+     .get('/note')
+     .set('Authorization', `Bearer ${authToken}`);
 
     console.log(response.body);  
     expect(response.status).toBe(200);
