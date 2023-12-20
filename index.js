@@ -2,9 +2,10 @@ const swaggerJsDoc = require('swagger-jsdoc');
 const swaggerUi = require('swagger-ui-express');
 const express = require("express")
 const cors = require("cors")
-const { connectDB } = require("./db")
+const { connection } = require("./db")
 const { userRouter } = require("./routes/user.routes")
-const { noteRouter } = require("./routes/note.routes")
+const { noteRouter } = require("./routes/note.routes");
+// const { connection } = require('mongoose');
 require("dotenv").config() 
 
 const app = express()
@@ -38,7 +39,7 @@ app.get("/swagger.json", (req, res) => {
     res.send(formattedSwaggerSpec);
 });
 
-const port = process.env.PORT 
+ const port = process.env.PORT 
 
 app.use(cors())
 app.use(express.json())
@@ -54,21 +55,23 @@ app.get("/",(req,res)=>{
 })
 
 
-connectDB().then(() => {
+/*  connectDB().then(() => {
     app.listen(port, () => {
        console.log("listening for requests");
     })
-})
+}) */
 
-// sets up connection and starts the server
-//const server = app.listen(4000, async () => {
-   // try {
-     // await connection;
-       // console.log('Database is connected');
-       // console.log('Server is running on port number 4000');
-   // } catch (error) {
-   //   console.error(error);
-  //  }
-  //});
+
+//sets up connection and starts the server
+app.listen(port, async () => {
+    try {
+      await connection;
+     console.log('Database is connected');
+     console.log('Server is running on port number 4000');
+   } catch (error) {
+    console.error(error);
+   }
+  });
+  
  
 module.exports = { app }
