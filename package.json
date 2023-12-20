@@ -8,9 +8,11 @@
     "server": "nodemon index.js",
     "type": "module"
   },
+
   "keywords": [],
   "author": "",
   "license": "ISC",
+  
   "dependencies": {
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
@@ -25,10 +27,14 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
+    "nock": "^13.4.0",
     "supertest": "^6.3.3"
   },
   "jest": {
     "testEnvironment": "node",
-    "testPathIgnorePatterns": ["noteappbackend/node_modules/", "noteappbackend/tests/__mocks__/"]
+    "testPathIgnorePatterns": [
+      "noteappbackend/node_modules/",
+      "noteappbackend/tests/__mocks__/"
+    ]
   }
 }
