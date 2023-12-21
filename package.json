@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest",
-    
+    "test": "jest", 
     "server": "nodemon index.js",
     "type": "module"
   },
