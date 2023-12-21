@@ -5,19 +5,24 @@ This repository contains the backend of my final project for the specialization 
 Welcome to NoteApp API! This backend API is designed to support note taking apllications like the Kosile note-taking application that I built with React and is available on my GitHub at https://github.com/Becky1703/NoteAppFrontend.git. The API provides CRUD operations for efficient note management within the MERN stack.
 
 ## Table of Contents
-> Prerequisites
-> Installation Guide
+> Installation
+  - Prerequisites
+  - Installation Guide
 > Usage
    - Start server
    - Access Api
-> Troubleshooting   
+> Troubleshooting 
+   - Troubleshooting  
 > Contributing
    - Getting started
    - Contributing Guidelines
    - Pull Request Template
 > Related projects
+   - Related projects
 > Authors
+   - Authors
 > About me
+   - About me
 > License
 
 ## Prerequisites
