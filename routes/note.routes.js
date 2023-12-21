@@ -245,10 +245,6 @@ noteRouter.get("/",async(req,res)=>{
  *                                    type: string
  *                                    description: The date and time when the note was created.
  *                                    example: "2022-12-31T23:59:59.999Z"
- *                                updatedAt:
- *                                    type: string
- *                                    description: The date and time when the note was last updated.
- *                                    example: "2022-12-31T23:59:59.999Z" 
  */
 
 noteRouter.post("/create", async(req, res) => {
@@ -339,10 +335,6 @@ noteRouter.post("/create", async(req, res) => {
  *                                    type: string
  *                                    description: The content of the note.
  *                                    example: "This is a sample note."
- *                                createdAt:
- *                                    type: string
- *                                    description: The date and time when the note was created.
- *                                    example: "2022-12-31T23:59:59.999Z"
  *                                updatedAt:
  *                                  type: string
  *                                  description: The date and time when the note was last updated.
@@ -351,7 +343,7 @@ noteRouter.post("/create", async(req, res) => {
 noteRouter.patch("/", async (req, res) => {
   let { id } = req.headers;
   try {
-   const updatedNote = await NoteModel.findByIdAndUpdate({ _id: id }, req.body);
+    await NoteModel.findByIdAndUpdate({ _id: id }, req.body);
     res.send({
       message: "Note updated",
       status: 1,
