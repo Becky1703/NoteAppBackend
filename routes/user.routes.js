@@ -132,7 +132,7 @@ userRouter.post("/register", async (req, res) => {
   try {
     // Check if the name, email, and password are provided
     if (!name || !email || !password) {
-      return res.status(500).send({ message: 'Invalid registration data', status: 0 });
+      return res.status(400).send({ message: 'Invalid registration data', status: 0 });
     }
 
     // Check if the email is already registered
@@ -142,33 +142,26 @@ userRouter.post("/register", async (req, res) => {
       return res.status(400).send({ message: 'Email is already registered', status: 0 });
     }
 
-    // Hashes a user's password using bcrypt
-    bcrypt.hash(password, 5, async function (err, hash) {
-      if (err) {
-        return res.status(500).send({ message: 'Something went wrong', status: 0 });
-      }
+    // Hash the password
+    const hashedPassword = await bcrypt.hash(password, 5);
 
-      try {
-        let user = new UserModel({ name, email, password: hash });
-        await user.save();
-        res.status(200).send({
-          message: 'User registered successfully',
-          status: 1,
-        });
-      } catch (error) {
-        res.status(500).send({
-          message: error.message || 'An error occurred',
-          status: 0,
-        });
-      }
+    // Create and save the user to the database
+    const user = new UserModel({ name, email, password: hashedPassword });
+    await user.save();
+
+    res.status(200).send({
+      message: 'User registered successfully',
+      status: 1,
     });
   } catch (error) {
+    console.error("Registration error:", error);
     res.status(500).send({
       message: error.message || 'An error occurred',
       status: 0,
     });
   }
 });
+
 
 
 /**
@@ -261,47 +254,44 @@ userRouter.post("/register", async (req, res) => {
  */
 
 userRouter.post("/login", async (req, res) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await UserModel.findOne({ email });
-
-    if (!user) {
-      return res.status(401).send({ message: 'User not found', status: 0 });
+    const { email, password } = req.body;
+    let option ={
+      expiresIn:"3m"
     }
 
-    if (password.length < 6) {
-      return res.status(401).send({ message: 'Invalid password', status: 0 });
+    try {
+      let data = await UserModel.find({ email });
+      if (data.length > 0) {
+        // let token = jwt.sign({ userId: data[0]._id }, "Becky1703",option);
+        const result = await bcrypt.compare(password, data[0].password,)
+         // if (err)
+
+           // return res.send({ message: "Somthing went wrong:" + err, status: 0 });
+          if (result) {
+            let token = jwt.sign({ userId: data[0]._id }, "Becky1703",option);
+            res.send({
+              message: "User logged in successfully",
+              token: token,
+              status: 1,
+            });
+          } else {
+            res.send({
+              message: "Incorrect password",
+              status: 0,
+            });
+        }
+      } else {
+        res.send({
+          message: "User does not exist",
+          status: 0,
+        });
+      }
+    } catch (error) {
+      res.send({
+        message: error.message,
+        status: 0,
+      });
     }
-
-    const isPasswordValid = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordValid) {
-      return res.status(401).send({ message: 'Incorrect password', status: 0 });
-    }
-
-    // Generate and send a JWT token upon successful login
-    const token = jwt.sign({ userId: user._id }, "Becky1703", { expiresIn: "20m" });
-    res.status(200).send({
-      message: 'Login Successful',
-      token,
-      status: 1,
-    });
-  } catch (error) {
-    console.error(error);
-
-  // Check for specific error types related to invalid tokens
-   if (error.name === 'JsonWebTokenError' || error.name === 'TokenExpiredError') {
-      console.log('Token error:', error.message);
-      return res.status(401).send({ message: 'Invalid token', status: 0 });
-    }
-
-
-    res.status(500).send({
-      message: 'An error occurred',
-      status: 0,
-    });
-  }
-});
+  });
 
 module.exports = {userRouter}

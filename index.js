@@ -22,6 +22,10 @@ const options = {
         servers: [
             {
                 url: "http://localhost:4000",
+            },
+
+            {
+                url: "https://nervous-frog-pajamas.cyclic.app",
             }
         ]
     },
@@ -55,11 +59,12 @@ app.get("/",(req,res)=>{
 })
 
 
-/*  connectDB().then(() => {
-    app.listen(port, () => {
-       console.log("listening for requests");
-    })
-}) */
+app.use(cors( {
+    origin: 'https://y-pg1vos1na-becky1703s-projects.vercel.app',
+    methods: 'GET, POST, PUT, PATCH, DELETE',
+    header: 'Content-Type',
+    credentials: true,
+  }));
 
 
 //sets up connection and starts the server
