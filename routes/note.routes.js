@@ -9,6 +9,15 @@ noteRouter.use(authenticator)
 
 //const jwtSecret = process.env.JWT_SECRET || "defaultSecret";
 
+/**
+ * @swagger
+ * tags:
+ *   name: Note
+ *   description: The users managing API
+ */
+
+
+
 noteRouter.get("/",async(req,res)=>{
   let token = req.headers.authorization
   jwt.verify(token,"Becky1703",async(err,decode)=>{
