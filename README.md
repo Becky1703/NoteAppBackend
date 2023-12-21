@@ -5,18 +5,19 @@ This repository contains the backend of my final project for the specialization 
 Welcome to NoteApp API! This backend API is designed to support note taking apllications like the Kosile note-taking application that I built with React and is available on my GitHub at https://github.com/Becky1703/NoteAppFrontend.git. The API provides CRUD operations for efficient note management within the MERN stack.
 
 ## Table of Contents
-> Installation
-   - Prerequisites
-   - Installation Steps
+> Prerequisites
+> Installation Guide
 > Usage
-   - Example 1: Basic usage
-   - Example 2: Basic usage
+   - Start server
+   - Access Api
+> Troubleshooting   
 > Contributing
    - Getting started
    - Contributing Guidelines
    - Pull Request Template
 > Related projects
-
+> Authors
+> About me
 > License
 
 ## Prerequisites
@@ -49,7 +50,7 @@ Before getting started, ensure you have the following prerequisites:
    ```
   
 ## Usage
-1. Start the server
+1. Start the server:
 To run the application, make sure you have followed the installation guide above. If you have not, please refer to the 'Installation Guide'.
 
 After setting up your environment, naviagate to your project's root directory and execute the following command.
@@ -59,7 +60,7 @@ After setting up your environment, naviagate to your project's root directory an
 ```
 This will start the API in a server and the application will be accessible locally at http://localhost:4000 in your browser or you can change the port to any other port in your .env file.
 
-2. Access the API.
+2. Access the API:
 Open your browser and enter the following URL to access the application:
 ```arduino
 http://localhost:4000
@@ -69,17 +70,16 @@ You should see "message:api is working now".
 You can also explore the API documentation at http://localhost:4000/docs for details on available endpoints and how to use them.
 
 
-
 ## Troubleshooting
-One likely issue that might occur while using the application is port conflict. Make sure to check if the port is in use by another application or service. You can do this by running
+One likely issue that might occur while using the application is port conflict. Make sure to check if the port is in use by another application or service. You can do this by running:
 ```bash
 sudo lsof -i :<port number>
 ```
-You should also check firewall rules
+You should also check firewall rules:
 ```bash
 sudo ufw status
 ```
-If the port is blocked, make sure you allow the firewall rule for that port
+If the port is blocked, make sure you allow the firewall rule for that port:
 ```bash
 sudo ufw allow <port number>
 ```
@@ -97,7 +97,6 @@ Related issues: [List any related issues or pull requests ]
 Explore other projects and resoources related to Note App Api:
 
 A Note App Api made with Go https://github.com/batnoter/batnoter-api.git
-
 
 
 ## Authors
