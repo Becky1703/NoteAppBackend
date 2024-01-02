@@ -256,7 +256,7 @@ userRouter.post("/register", async (req, res) => {
 userRouter.post("/login", async (req, res) => {
     const { email, password } = req.body;
     let option ={
-      expiresIn:"10m"
+      expiresIn:"30m"
     }
 
     try {
@@ -275,19 +275,19 @@ userRouter.post("/login", async (req, res) => {
               status: 1,
             });
           } else {
-            res.send({
+            res.status(500).send({
               message: "Incorrect password",
               status: 0,
             });
         }
       } else {
-        res.send({
+        res.status(500).send({
           message: "User does not exist",
           status: 0,
         });
       }
     } catch (error) {
-      res.send({
+      res.status(500).send({
         message: error.message,
         status: 0,
       });
